@@ -1,0 +1,12 @@
+.config/
+.storage/
+deps/
+tts/
+custom_components/
+*.log
+*.pid
+*.db
+*.conf
+test.*
+.HA_VERSION
+secrets.yaml

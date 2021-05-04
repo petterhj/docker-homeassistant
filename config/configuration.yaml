@@ -1,0 +1,39 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+logger: 
+  logs: 
+    homeassistant.components.tellstick: debug
+
+tellstick:
+  # host: 127.0.0.1
+  host: core-tellstick
+  port: [50800, 50801]
+  signal_repetitions: 3
+    
+light:
+  - platform: tellstick
+  # - platform: switch
+  #   name: living_room_shelf
+  #   entity_id: switch.living_room_shelf
+  # - platform: group
+  #   name: Living Room - All
+  #   entities:
+  #     - light.living_room_roof
+  #     - light.living_room_shelf
+  #     - light.living_room_window
+  
+switch:
+  platform: tellstick
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+
