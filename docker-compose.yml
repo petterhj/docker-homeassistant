@@ -1,0 +1,16 @@
+version: '3.6'
+services:
+  hass:
+    build: .
+    volumes:
+      - "/volume1/docker/homeassistant/config:/config"
+      - "/volume1/docker/homeassistant/tellstick.conf:/etc/tellstick.conf"
+    devices:
+    - "/dev/bus/usb:/dev/bus/usb:rwm"
+    ports:
+      - "8123:8123"
+    environment:
+    - TZ=Europe/Oslo
+    restart: unless-stopped
+    network_mode: "host"
+    privileged: true
