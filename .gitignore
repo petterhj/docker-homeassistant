@@ -1,5 +1,6 @@
 .config/
 .storage/
+config/*
 deps/
 tts/
 custom_components/
@@ -7,6 +8,7 @@ custom_components/
 *.pid
 *.db
 *.conf
+*.json
 test.*
 .HA_VERSION
 secrets.yaml
