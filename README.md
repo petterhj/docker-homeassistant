@@ -96,6 +96,67 @@ https://github.com/hass-emulated-hue/core
 * https://www.reddit.com/r/homeassistant/comments/g8giur/emulated_hue_synology_homeassistant/
 
 
+## Tellstick (Duo)
+
+``sh
+$ tellcore_events --device
+```
+
+```
+# /etc/tellstick.conf
+user="root"
+group="root"
+deviceNode="/dev/tellstick"
+ignoreControllerConfirmation="false"
+device {
+  id=2
+  name="Button"
+  controller=0
+  protocol="arctech"
+  model="selflearning-switch"
+  parameters {
+    house="32439934"
+    unit="16"
+  }
+}
+```
+
+```yaml
+# configuration.yaml
+tellstick:
+  signal_repetitions: 3
+
+switch:
+  - platform: tellstick
+```
+```yaml
+# automations.yaml
+- id: button_off
+  alias: 'Button off'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: switch.button
+    to: 'off'
+  condition: []
+  action:
+  - scene: scene.lighting_living_room_off
+  - scene: scene.all_devices_off
+  mode: single
+- id: button_on
+  alias: 'Button on'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: switch.button
+    to: 'on'
+  condition: []
+  action:
+  - scene: scene.new_scene
+  mode: single
+```
+
+
 # Resources
 
 * https://www.home-assistant.io/installation/alternative/#synology-nas
