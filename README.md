@@ -64,9 +64,7 @@ decimals: 0
 https://www.home-assistant.io/integrations/emulated_hue
 
 > Logitech Harmony remotes cannot connect to this emulator via Android and iOS mobile applications because they require the physical button on the hub to be pressed. The MyHarmony desktop software must be used with the original cable to connect it, then “Scan for Devices”.
-http://<host>:<port>/description.xml
-http://<host>:<port>/api/
-http://<host>:<port>/api/pi/lights
+
 
 #### Synology
 
@@ -98,7 +96,7 @@ https://github.com/hass-emulated-hue/core
 
 ## Tellstick (Duo)
 
-``sh
+```sh
 $ tellcore_events --device
 ```
 
