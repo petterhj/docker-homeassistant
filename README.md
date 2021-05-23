@@ -1,4 +1,8 @@
-# Container
+# Home Assistant
+
+Docker image (https://github.com/petterhj/docker-homeassistant) based on [taskinen/home-assistant](https://github.com/taskinen/home-assistant) for running [Home Assistant](https://telldus.com/en/) with support for the [Telldus](https://telldus.com/en/) Tellstick Duo.
+
+## Container
 
 ```sh
 $ docker-compose build
@@ -7,8 +11,6 @@ $ docker-compose up
 $ docker ps
 $ docker exec -it <container_id> bash
 ```
-
-# Home Assistant
 
 ## API
 
@@ -152,6 +154,23 @@ switch:
   action:
   - scene: scene.new_scene
   mode: single
+```
+
+## Spotify
+
+* https://www.home-assistant.io/integrations/spotify/
+* https://github.com/fondberg/spotcast [HACS]
+* https://github.com/custom-cards/spotify-card [HACS]
+
+```yaml
+# configuration.yaml
+spotify:
+  client_id: !secret sp_client_id
+  client_secret: !secret sp_client_secret
+
+spotcast:
+  sp_dc: !secret primary_sp_dc
+  sp_key: !secret primary_sp_key
 ```
 
 
