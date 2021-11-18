@@ -4,9 +4,6 @@ services:
     build: .
     volumes:
       - "/volume1/docker/homeassistant/config:/config"
-      - "/volume1/docker/homeassistant/tellstick.conf:/etc/tellstick.conf"
-    devices:
-    - "/dev/bus/usb:/dev/bus/usb"
     ports:
       - "8123:8123"
     environment:
