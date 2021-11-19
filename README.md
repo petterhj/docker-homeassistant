@@ -1,15 +1,39 @@
 # Home Assistant
 
-Docker image (https://github.com/petterhj/docker-homeassistant) for running [Home Assistant](https://telldus.com/en/) with [supervisord](http://supervisord.org/).
+Docker image (https://github.com/petterhj/docker-homeassistant) for running [Home Assistant](https://www.home-assistant.io/) with [supervisord](http://supervisord.org/).
 
 ## Container
 
 ```sh
-$ docker-compose build
 $ docker-compose up
 
-$ docker ps
+$ docker-compose ps
 $ docker exec -it <container_id> bash
+
+$ docker pull homeassistant/home-assistant:stable # Update base image
+$ docker-compose up --no-deps -d homeassistant
+```
+
+### Services
+
+* **homeassistant**: `8023`
+* **postgres**: `5234`
+* **influxdb**: `8086` / `8083`
+* **grafana**: `3000`  
+  The grafana docker container runs on `user:group 472:472`. The persistent volume must therefor be `chmod` as that user: `chown -R 472:472 /<path>/.grafana`.
+
+```yaml
+// configuration.yaml
+
+influxdb:
+  host: localhost
+  port: 8086
+  database: !secret influxdb_database
+  username: !secret influxdb_username
+  password: !secret influxdb_password
+
+recorder:
+  db_url: postgresql://<username>:<password>@localhost/<database>
 ```
 
 ## API
@@ -117,6 +141,7 @@ spotcast:
 # Resources
 
 * https://www.home-assistant.io/installation/alternative/#synology-nas
+https://github.com/timvancann/home-assistant-docker-compose
 * https://github.com/home-assistant/docker/blob/master/Dockerfile
 * https://github.com/taskinen/home-assistant
 * https://pictogrammers.github.io/@mdi/font/5.3.45/
