@@ -11,8 +11,8 @@ services:
       POSTGRES_PASSWORD: homeassistant
       POSTGRES_DATABASE: homeassistant
     volumes:
-      - /volume1/docker/homeassistant/.postgres:/var/lib/postgresql/data
-      - /volume1/docker/homeassistant/db-init.sh:/docker-entrypoint-initdb.d/01-init.sh
+      - /home/pi/homeassistant/.postgres:/var/lib/postgresql/data
+      - /home/pi/homeassistant/db-init.sh:/docker-entrypoint-initdb.d/01-init.sh
       - /etc/localtime:/etc/localtime:ro
 
   influxdb:
@@ -26,31 +26,54 @@ services:
       INFLUXDB_USER_PASSWORD: homeassistant
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /volume1/docker/homeassistant/.influxdb:/var/lib/influxdb
+      - /home/pi/homeassistant/.influxdb:/var/lib/influxdb
 
   grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
     depends_on:
       - influxdb
-    image: grafana/grafana:latest
-    container_name: grafana
     network_mode: host
     environment:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,briangann-gauge-panel,natel-plotly-panel,grafana-simple-json-datasource
     volumes:
-      - /volume1/docker/homeassistant/.grafana:/var/lib/grafana
+      - /home/pi/homeassistant/.grafana:/var/lib/grafana
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    volumes:
+      - /home/pi/homeassistant/.zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    restart: always
+    network_mode: host
+    privileged: true
+    environment:
+      - TZ=Europe/Oslo
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    restart: always
+    network_mode: host
+    volumes:
+      - /home/pi/homeassistant/mosquitto.conf:/mosquitto/config/mosquitto.conf
 
   homeassistant:
+    container_name: home-assistant
+    image: homeassistant/home-assistant:latest
     depends_on:
       - postgres
       - influxdb
-    container_name: home-assistant
-    image: homeassistant/home-assistant:latest
+      - zigbee2mqtt
     restart: always
     privileged: true
     command: [ "python", "-m", "homeassistant", "--config", "/config", "--log-rotate-days", '3' ]
     network_mode: host
     volumes:
-      - /volume1/docker/homeassistant/config:/config
+      - /home/pi/homeassistant/config:/config
       - /etc/localtime:/etc/localtime:ro
     environment:
-    - TZ=Europe/Oslo
+      - TZ=Europe/Oslo

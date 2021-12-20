@@ -1,6 +1,6 @@
 # Home Assistant
 
-Docker image (https://github.com/petterhj/docker-homeassistant) for running [Home Assistant](https://www.home-assistant.io/) with [supervisord](http://supervisord.org/).
+Docker setup for running [Home Assistant](https://www.home-assistant.io/) with [PostgreSQL](https://www.postgresql.org/), [InfluxDB](https://www.influxdata.com/), [Grafana](https://grafana.com/), [Mosquitto](https://mosquitto.org/) and [Zigbee2MQTT](https://www.zigbee2mqtt.io/).
 
 ## Container
 
@@ -16,11 +16,13 @@ $ docker-compose up --no-deps -d homeassistant
 
 ### Services
 
-* **homeassistant**: `8023`
+* **homeassistant**: `8123`
 * **postgres**: `5234`
 * **influxdb**: `8086` / `8083`
 * **grafana**: `3000`  
   The grafana docker container runs on `user:group 472:472`. The persistent volume must therefor be `chmod` as that user: `chown -R 472:472 /<path>/.grafana`.
+* **mosquitto**: `1883`
+* **zigbee2mqtt**
 
 ```yaml
 // configuration.yaml
@@ -34,6 +36,28 @@ influxdb:
 
 recorder:
   db_url: postgresql://<username>:<password>@localhost/<database>
+```
+
+#### Zigbee2MQTT
+
+* https://www.zigbee2mqtt.io/guide/installation/02_docker.html
+* https://www.zigbee2mqtt.io/guide/configuration/homeassistant.html
+
+```yaml
+# .zigbee2mqtt/configuration.yaml
+homeassistant: true
+permit_join: true
+
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://localhost
+
+serial:
+  adapter: deconz
+  port: /dev/ttyACM0
+
+frontend:
+  port: 
 ```
 
 ## API
@@ -141,7 +165,8 @@ spotcast:
 # Resources
 
 * https://www.home-assistant.io/installation/alternative/#synology-nas
-https://github.com/timvancann/home-assistant-docker-compose
+* https://github.com/timvancann/home-assistant-docker-compose
+* https://gist.github.com/connor4312/f16544bcc5b48af345a94feedb5a0ee1
 * https://github.com/home-assistant/docker/blob/master/Dockerfile
 * https://github.com/taskinen/home-assistant
 * https://pictogrammers.github.io/@mdi/font/5.3.45/
