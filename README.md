@@ -16,13 +16,14 @@ $ docker-compose up --no-deps -d homeassistant
 
 ### Services
 
-* **homeassistant**: `8123`
-* **postgres**: `5234`
-* **influxdb**: `8086` / `8083`
-* **grafana**: `3000`  
-  The grafana docker container runs on `user:group 472:472`. The persistent volume must therefor be `chmod` as that user: `chown -R 472:472 /<path>/.grafana`.
-* **mosquitto**: `1883`
-* **zigbee2mqtt**
+| Service | Port | Note |
+| ------- | -----| ---- |
+| **homeassistant** | `8123` | |
+| **postgres** | `5234` | |
+| **influxdb** | `8086`/`8083` | |
+| **grafana** | `3000` | The grafana docker container runs on `user:group 472:472`. The persistent volume must therefore be `chmod` as that user: `chown -R 472:472 /<path>/.grafana`. |
+| **mosquitto** | `1883` | |
+| **zigbee2mqtt** | `8180` | |
 
 ```yaml
 // configuration.yaml
