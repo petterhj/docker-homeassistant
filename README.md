@@ -24,6 +24,7 @@ $ docker-compose up --no-deps -d homeassistant
 | **grafana** | `3000` | The grafana docker container runs on `user:group 472:472`. The persistent volume must therefore be `chmod` as that user: `chown -R 472:472 /<path>/.grafana`. |
 | **mosquitto** | `1883` | |
 | **zigbee2mqtt** | `8180` | |
+| **esphome** | `6052` | |
 
 ```yaml
 // configuration.yaml

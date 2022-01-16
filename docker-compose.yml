@@ -78,4 +78,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
     environment:
       - TZ=Europe/Oslo
-   
+
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    volumes:
+      - /home/pi/homeassistant/.esphome:/config:rw
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    restart: always
