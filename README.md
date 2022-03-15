@@ -111,16 +111,28 @@ hour24: true
 decimals: 0
 ```
 
-## Harmony (Home Control)
+
+## Harmony
+
+```yaml
+# configuration.yaml
+sensor:
+  - platform: template
+    sensors:
+      harmony_hub:
+        friendly_name: "Current activity"
+        value_template: '{{ state_attr("remote.harmony_hub", "current_activity") }}'
+```
+
+### Home Control
 
 https://www.home-assistant.io/integrations/emulated_hue
 
 > Logitech Harmony remotes cannot connect to this emulator via Android and iOS mobile applications because they require the physical button on the hub to be pressed. The MyHarmony desktop software must be used with the original cable to connect it, then “Scan for Devices”.
 
+##### Synology
 
-#### Synology
-
-nginx config: `/etc/nginx/nginx.conf` (replaced on restart)  
+nginx config: `/etc/nginx/nginx.conf` (replaced on restart)
 nginx template config: `/usr/syno/share/nginx/`
 
 `WWW_Main.mustache`
@@ -144,6 +156,89 @@ https://github.com/hass-emulated-hue/core
 > This virtual bridge runs at HTTP port 80 and HTTPS port 443 on your local network. These ports can not be changed as the HUE infrastructure requires them to be at these defaults.
 
 * https://www.reddit.com/r/homeassistant/comments/g8giur/emulated_hue_synology_homeassistant/
+
+
+## Emulated Roku
+
+https://www.home-assistant.io/integrations/emulated_roku/
+
+```sh
+tail -f home-assistant.log | grep roku
+DEBUG (MainThread) [homeassistant.core] Bus:Handling <Event roku_command[L]: source_name=Home Assistant, type=keypress, key=Search>
+```
+
+```yaml
+# automations.yaml
+alias: Run NRK TV (Google TV)
+trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Info
+action:
+  - service: media_player.select_source
+    target:
+      entity_id: media_player.google_tv_2
+    data:
+      source: no.nrk.tv
+```
+
+| Key             | Action                   |
+| --------------- | ------------------------ |
+| `Fwd`           |                          |
+| `Rev`           |                          |
+| `...`           |                          |
+| `Back`          | Google TV: Kodi          |
+| `Home`          | Google TV: Netflix       |
+| `Info`          | Google TV: NRK TV        |
+| `InstantReplay` | Google TV: Spotify       |
+| `Search`        | Google TV: YouTube       |
+
+
+## Keyboard Remote (Flirc)
+
+https://www.home-assistant.io/integrations/keyboard_remote/
+
+```yaml
+# configuration.yaml
+keyboard_remote:
+  - device_name: 'flirc.tv flirc Keyboard'
+  # - device_descriptor: '/dev/input/event0'
+    type:
+      - 'key_up'
+      - 'key_down'
+      # - 'key_hold'
+```
+
+```yaml
+alias: 'Remote: Power'
+description: ''
+trigger:
+  - platform: event
+    event_type: keyboard_remote_command_received
+    event_data:
+      device_name: flirc.tv flirc Keyboard
+      key_code: 31
+      type: key_down
+condition: []
+action:
+  - service: light.toggle
+    target:
+      device_id: d081d5962686e9904ebbfec152dc64e9
+    data: {}
+mode: single
+```
+
+```sh
+# with `debug` logging enabled:
+$ tail -f home-assistant.log | grep keyboard_remote
+DEBUG (MainThread) [homeassistant.components.keyboard_remote] key event at 1647365376.381469, 31 (KEY_S), down
+DEBUG (MainThread) [homeassistant.core] Bus:Handling <Event keyboard_remote_command_received[L]: key_code=31, type=key_down, device_descriptor=/dev/input/event0, device_name=flirc.tv flirc Keyboard>
+DEBUG (MainThread) [homeassistant.components.keyboard_remote] key event at 1647365376.445474, 31 (KEY_S), up
+DEBUG (MainThread) [homeassistant.core] Bus:Handling <Event keyboard_remote_command_received[L]: key_code=31, type=key_up, device_descriptor=/dev/input/event0, device_name=flirc.tv flirc Keyboard>
+```
 
 
 ## Spotify
